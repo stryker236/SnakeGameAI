@@ -82,9 +82,6 @@ while running:
             key = False
             break
 
-
-    print("positions")
-    print(snake.positions)
     # Move the snake
     snake.move(snake.direction)
 
@@ -107,10 +104,13 @@ while running:
     # Clear the screen
     screen.fill("black")
 
-    
+    snake_color = "#64646333"
     #Draw the snake
+    # pygame.draw.rect(screen, (200,200,200,0), pygame.Rect(2*SQUARE_SIZE, 2*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
     for segment in snake.positions:
-        pygame.draw.rect(screen, "white", pygame.Rect(segment[0]*SQUARE_SIZE, segment[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+        # pygame.draw.rect(screen, pygame.Color(255,255,255,0.2), pygame.Rect(segment[0]*SQUARE_SIZE, segment[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+        pygame.draw.rect(screen, snake_color, pygame.Rect(segment[0]*SQUARE_SIZE, segment[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
     #Draw the food
     if food.is_food_on_screen:
         pygame.draw.rect(screen, "red", pygame.Rect(food.position[0]*SQUARE_SIZE, food.position[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))

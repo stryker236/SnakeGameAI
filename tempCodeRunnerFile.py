@@ -1,1 +1,1 @@
-SQUARE_SIZE
+5
