@@ -10,6 +10,8 @@ import json
 WIDTH = 1000
 HEIGHT = 1000
 SQUARE_SIZE = 200
+N_ROWS = 5
+N_COLS = 5
 
 
 total_food_eaten = 0
@@ -23,7 +25,7 @@ deaths = 0
 
 def reset_game(snake, food):
     snake.length =  1
-    snake.positions = [(SQUARE_SIZE,SQUARE_SIZE)]
+    snake.positions = [(1,1)]
     snake.direction = pygame.K_RIGHT  # Start moving up
     # snake.grow = False
     food.is_food_on_screen = False
@@ -42,8 +44,8 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-snake = Snake(WIDTH,HEIGHT,SQUARE_SIZE)
-food = Food(WIDTH,HEIGHT,SQUARE_SIZE)
+snake = Snake(N_ROWS,N_COLS)
+food = Food(N_ROWS,N_COLS)
 food.spawn_food()
 
 Q = {}
@@ -72,13 +74,15 @@ for episode in range(n_episodes):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                manual_move(snake,event)
 
-        current_state = ql.get_game_state(snake,food,WIDTH,HEIGHT)
-        ql.update_q_table(Q,current_state,ql.ACTIONS)
+        # current_state = ql.get_game_state(snake,food,WIDTH,HEIGHT)
+        # ql.update_q_table(Q,current_state,ql.ACTIONS)
 
         # action = max(Q[current_state], key=Q[current_state].get)
-        action = max(Q[current_state],key = lambda k: Q[current_state][k])
-
+        # action = max(Q[current_state],key = lambda k: Q[current_state][k])
+        
 
         # Update the snake's direction based on the selected action
         # if action == 'Up':
@@ -94,8 +98,8 @@ for episode in range(n_episodes):
         # Move the snake
     
         # snake.direction = auto_move1(snake,food.position)
-        # snake.move(snake.direction)
-        snake.move(action)
+        snake.move(snake.direction)
+        # snake.move(action)
 
         new_state = (
             snake.get_head_position(),
@@ -106,9 +110,9 @@ for episode in range(n_episodes):
         reward = ql.calculate_reward(snake,food,WIDTH,HEIGHT)
 
 
-        ql.update_q_table(Q,new_state,ql.ACTIONS)
-        best_next_action = max(Q[new_state],key = lambda k: Q[new_state][k]) # acho que nao é necessario
-        Q[current_state][action] += learning_rate * (reward + discount_factor * Q[new_state][best_next_action] - Q[current_state][action])
+        # ql.update_q_table(Q,new_state,ql.ACTIONS)
+        # best_next_action = max(Q[new_state],key = lambda k: Q[new_state][k]) # acho que nao é necessario
+        # Q[current_state][action] += learning_rate * (reward + discount_factor * Q[new_state][best_next_action] - Q[current_state][action])
 
         # snake.move(action)
 
@@ -164,8 +168,8 @@ for episode in range(n_episodes):
         if episode % 50 == 0:
             print("Episode n:",episode)
             print("number of states:",len(Q))
-            print("Best move",max(Q[current_state],key = lambda k: Q[current_state][k]))
-            print("Best score",Q[current_state][action])
+            # print("Best move",max(Q[current_state],key = lambda k: Q[current_state][k]))
+            # print("Best score",Q[current_state][action])
             # print(action)
             # print(Q[current_state][action])
 
@@ -182,10 +186,10 @@ for episode in range(n_episodes):
         
         #Draw the snake
         for segment in snake.positions:
-            pygame.draw.rect(screen, "white", pygame.Rect(segment[0], segment[1], SQUARE_SIZE, SQUARE_SIZE))
+            pygame.draw.rect(screen, "white", pygame.Rect(segment[0]*SQUARE_SIZE, segment[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
         #Draw the food
         # if food.is_food_on_screen:
-        pygame.draw.rect(screen, "red", pygame.Rect(food.position[0], food.position[1], SQUARE_SIZE, SQUARE_SIZE))
+        pygame.draw.rect(screen, "red", pygame.Rect(food.position[0]*SQUARE_SIZE, food.position[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
         # Display frame count and food eaten
         font = pygame.font.Font(None, 36)
@@ -214,7 +218,7 @@ for episode in range(n_episodes):
         # limits FPS to 60
         # dt is delta time in seconds since last frame, used for framerate-
         # independent physics.da
-        dt = clock.tick(1000)/1000
+        dt = clock.tick(1)/1000
 
 with open('qtable.json', 'w') as json_file:
     json.dump(Q, json_file)
