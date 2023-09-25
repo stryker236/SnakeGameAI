@@ -31,7 +31,7 @@ class Snake:
     def eat_food(self, food_position):
         if self.get_head_position() == food_position:
             self.length += 1
-            print("eat_food len:",len(self.positions))
+            # print("eat_food len:",len(self.positions))
             return True
         else:
             self.positions.pop()

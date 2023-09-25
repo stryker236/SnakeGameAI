@@ -9,9 +9,9 @@ import json
 
 WIDTH = 1000
 HEIGHT = 1000
-SQUARE_SIZE = 200
-N_ROWS = 5
-N_COLS = 5
+SQUARE_SIZE = 100
+N_ROWS = 10
+N_COLS = 10
 FPS = 5
 
 
@@ -82,14 +82,14 @@ for episode in range(n_episodes):
                 manual_move(snake,event)
 
                 
-        print("positions:",snake.positions)
         # Move the snake
         snake.move(snake.direction)
 
-        # Check for collisions
+        #Eat food
         if snake.eat_food(food.position):
             food.set_food_on_screen(False)
 
+        # Check for collisions
         if snake.check_collision():
             reset_game(snake, food)
             deaths += 1
