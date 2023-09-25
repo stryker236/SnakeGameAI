@@ -4,14 +4,10 @@ class Snake:
     # def __init__(self,WIDTH,HEIGHT,SQUARE_SIZE):
     def __init__(self,n_rows,n_cols):
         self.length = 1  # Initial length of the snake
-        # self.positions = [(SQUARE_SIZE,SQUARE_SIZE)]  # Initial position of the snake's head
         self.positions = [(1,1)]  # Initial position of the snake's head
         self.direction = pygame.K_RIGHT  # Initial direction (right)
-        # self.window_width = WIDTH
         self.n_rows = n_rows
-        # self.window_height = HEIGHT
         self.n_cols = n_cols
-        # self.square_size = SQUARE_SIZE
 
     def get_head_position(self):
         return self.positions[0]
@@ -30,10 +26,12 @@ class Snake:
             new = (x + 1, y)
 
         self.positions.insert(0, new)
+        # self.positions.pop()
 
     def eat_food(self, food_position):
         if self.get_head_position() == food_position:
             self.length += 1
+            print("eat_food len:",len(self.positions))
             return True
         else:
             self.positions.pop()
