@@ -2,11 +2,11 @@ import pygame
 def manual_move(snake,event):
     if (event.key == pygame.K_UP or event.key == pygame.K_w) and snake.direction != pygame.K_DOWN:
         snake.direction = pygame.K_UP
-    if (event.key == pygame.K_DOWN or event.key == ord("s")) and snake.direction != pygame.K_UP:
+    elif (event.key == pygame.K_DOWN or event.key == ord("s")) and snake.direction != pygame.K_UP:
         snake.direction = pygame.K_DOWN
-    if (event.key == pygame.K_LEFT or event.key == ord("a")) and snake.direction != pygame.K_RIGHT:
+    elif (event.key == pygame.K_LEFT or event.key == ord("a")) and snake.direction != pygame.K_RIGHT:
         snake.direction = pygame.K_LEFT
-    if (event.key == pygame.K_RIGHT or event.key == ord("d")) and snake.direction != pygame.K_LEFT:
+    elif (event.key == pygame.K_RIGHT or event.key == ord("d")) and snake.direction != pygame.K_LEFT:
         snake.direction = pygame.K_RIGHT
 
 def auto_move1(snake, food_position):

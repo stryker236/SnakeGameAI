@@ -1,0 +1,56 @@
+[33mcommit 7cab00bcc3d8f1df6a5bb897f9f4ce9ccd48fd5d[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: stryker236 <rri.nascimento@gmail.com>
+Date:   Mon Sep 25 17:53:45 2023 +0100
+
+    cleaned code
+
+[1mdiff --git a/Snake.py b/Snake.py[m
+[1mindex 3734f08..b123270 100644[m
+[1m--- a/Snake.py[m
+[1m+++ b/Snake.py[m
+[36m@@ -31,7 +31,7 @@[m [mclass Snake:[m
+     def eat_food(self, food_position):[m
+         if self.get_head_position() == food_position:[m
+             self.length += 1[m
+[31m-            print("eat_food len:",len(self.positions))[m
+[32m+[m[32m            # print("eat_food len:",len(self.positions))[m
+             return True[m
+         else:[m
+             self.positions.pop()[m
+[1mdiff --git a/__pycache__/Snake.cpython-310.pyc b/__pycache__/Snake.cpython-310.pyc[m
+[1mindex 925fa3c..f071ad2 100644[m
+Binary files a/__pycache__/Snake.cpython-310.pyc and b/__pycache__/Snake.cpython-310.pyc differ
+[1mdiff --git a/game2.py b/game2.py[m
+[1mindex 0c326b8..4bd8209 100644[m
+[1m--- a/game2.py[m
+[1m+++ b/game2.py[m
+[36m@@ -9,9 +9,9 @@[m [mimport json[m
+ [m
+ WIDTH = 1000[m
+ HEIGHT = 1000[m
+[31m-SQUARE_SIZE = 200[m
+[31m-N_ROWS = 5[m
+[31m-N_COLS = 5[m
+[32m+[m[32mSQUARE_SIZE = 100[m
+[32m+[m[32mN_ROWS = 10[m
+[32m+[m[32mN_COLS = 10[m
+ FPS = 5[m
+ [m
+ [m
+[36m@@ -82,14 +82,14 @@[m [mfor episode in range(n_episodes):[m
+                 manual_move(snake,event)[m
+ [m
+                 [m
+[31m-        print("positions:",snake.positions)[m
+         # Move the snake[m
+         snake.move(snake.direction)[m
+ [m
+[31m-        # Check for collisions[m
+[32m+[m[32m        #Eat food[m
+         if snake.eat_food(food.position):[m
+             food.set_food_on_screen(False)[m
+ [m
+[32m+[m[32m        # Check for collisions[m
+         if snake.check_collision():[m
+             reset_game(snake, food)[m
+             deaths += 1[m

@@ -70,73 +70,76 @@ discount_factor = 0.9
 # update weights
 # move the
 
-for episode in range(n_episodes):    
-    running = True
-    while running:
-        total_frame_count += 1
-        frame_count += 1
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.KEYDOWN:
-                manual_move(snake,event)
+while running:
+    total_frame_count += 1
+    frame_count += 1
+    for event in pygame.event.get():
+        key = True
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN and key:
+            manual_move(snake,event)
+            key = False
+            break
 
-                
-        # Move the snake
-        snake.move(snake.direction)
 
-        #Eat food
-        if snake.eat_food(food.position):
-            food.set_food_on_screen(False)
+    print("positions")
+    print(snake.positions)
+    # Move the snake
+    snake.move(snake.direction)
 
-        # Check for collisions
-        if snake.check_collision():
-            reset_game(snake, food)
-            deaths += 1
-            food_eaten = 0
-            frame_count = 0
+    #Eat food
+    if snake.eat_food(food.position):
+        food.set_food_on_screen(False)
 
-        # Spawn new food if it's not on the screen
-        if not food.is_food_on_screen:
-            food_position = food.spawn_food()
-            food.set_food_on_screen(True)
+    # Check for collisions
+    if snake.check_collision():
+        reset_game(snake, food)
+        deaths += 1
+        food_eaten = 0
+        frame_count = 0
 
-        # Clear the screen
-        screen.fill("black")
+    # Spawn new food if it's not on the screen
+    if not food.is_food_on_screen:
+        food_position = food.spawn_food()
+        food.set_food_on_screen(True)
 
-        
-        #Draw the snake
-        for segment in snake.positions:
-            pygame.draw.rect(screen, "white", pygame.Rect(segment[0]*SQUARE_SIZE, segment[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
-        #Draw the food
-        if food.is_food_on_screen:
-            pygame.draw.rect(screen, "red", pygame.Rect(food.position[0]*SQUARE_SIZE, food.position[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+    # Clear the screen
+    screen.fill("black")
 
-        # Display frame count and food eaten
-        # font = pygame.font.Font(None, 36)
+    
+    #Draw the snake
+    for segment in snake.positions:
+        pygame.draw.rect(screen, "white", pygame.Rect(segment[0]*SQUARE_SIZE, segment[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+    #Draw the food
+    if food.is_food_on_screen:
+        pygame.draw.rect(screen, "red", pygame.Rect(food.position[0]*SQUARE_SIZE, food.position[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
-        # total_frame_text = font.render(f"Total Frames: {total_frame_count}", True, "green")
-        # total_food_text = font.render(f"Total Food eaten: {total_food_eaten}", True, "green")
-        # frame_text = font.render(f"Frames: {frame_count}", True, "green")
-        # food_text = font.render(f"Food eaten: {food_eaten}", True, "green")
-        # highest_score_text = font.render(f"Highest_food_eaten: {highest_score}", True, "green")
-        # highest_frame_text = font.render(f"Highest frames: {longest_run}", True, "green")
-        # deaths_text = font.render(f"Deaths: {deaths}", True, "green")
-        
-        
-        # screen.blit(total_frame_text, (10, 50))    
-        # screen.blit(total_food_text, (10, 10))
-        # screen.blit(frame_text, (10, 90))    
-        # screen.blit(food_text, (10, 130))    
-        # screen.blit(highest_score_text, (10, 170))    
-        # screen.blit(highest_frame_text, (10, 210))    
-        # screen.blit(deaths_text, (10, 250))    
+    # Display frame count and food eaten
+    # font = pygame.font.Font(None, 36)
 
-        # Update display
-        pygame.display.flip()
+    # total_frame_text = font.render(f"Total Frames: {total_frame_count}", True, "green")
+    # total_food_text = font.render(f"Total Food eaten: {total_food_eaten}", True, "green")
+    # frame_text = font.render(f"Frames: {frame_count}", True, "green")
+    # food_text = font.render(f"Food eaten: {food_eaten}", True, "green")
+    # highest_score_text = font.render(f"Highest_food_eaten: {highest_score}", True, "green")
+    # highest_frame_text = font.render(f"Highest frames: {longest_run}", True, "green")
+    # deaths_text = font.render(f"Deaths: {deaths}", True, "green")
+    
+    
+    # screen.blit(total_frame_text, (10, 50))    
+    # screen.blit(total_food_text, (10, 10))
+    # screen.blit(frame_text, (10, 90))    
+    # screen.blit(food_text, (10, 130))    
+    # screen.blit(highest_score_text, (10, 170))    
+    # screen.blit(highest_frame_text, (10, 210))    
+    # screen.blit(deaths_text, (10, 250))    
 
-        # limits FPS to 60
-        dt = clock.tick(FPS)/1000
+    # Update display
+    pygame.display.flip()
+
+    # limits FPS to 60
+    dt = clock.tick(FPS)/1000
 
 with open('qtable.json', 'w') as json_file:
     json.dump(Q, json_file)
