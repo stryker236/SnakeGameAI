@@ -5,6 +5,7 @@ from Food import Food
 from autonomous_move import auto_move1, manual_move
 import Q_learning as ql
 import json
+import server
 
 
 WIDTH = 1000
@@ -26,7 +27,7 @@ deaths = 0
 
 
 def reset_game(snake, food):
-    snake.length =  1
+    snake.length = 1
     snake.positions = [(1,1)]
     snake.direction = pygame.K_RIGHT  # Start moving up
     # snake.grow = False
@@ -90,11 +91,31 @@ while running:
         food.set_food_on_screen(False)
 
     # Check for collisions
+    # if snake.check_collision():
+    #     reset_game(snake, food)
+    #     deaths += 1
+    #     food_eaten = 0
+    #     frame_count = 0
+    
     if snake.check_collision():
-        reset_game(snake, food)
-        deaths += 1
-        food_eaten = 0
-        frame_count = 0
+        # Game over logic
+        flag = True
+        while flag:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        print("Game Over! Press 'R' to restart or 'Q' to quit.")
+                        # reset_game(snake, food)
+                        snake.positions = [(1,1)]
+                        snake.length = 1
+                        flag = False
+                        break
+                    elif event.key == pygame.K_q:
+                        running = False
+                        flag = False
+                        break
+            # if running:
+            #     break
 
     # Spawn new food if it's not on the screen
     if not food.is_food_on_screen:
