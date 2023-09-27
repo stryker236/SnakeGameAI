@@ -15,6 +15,9 @@ SQUARE_SIZE = 100
 N_ROWS = 10
 N_COLS = 10
 FPS = 10
+SNAKE_COLOR = "#64646333"
+FRUIT_COLOR = "red"
+
 db = TinyDB("test.json")
 
 
@@ -26,13 +29,6 @@ longest_run = 0
 highest_score = 0
 deaths = 0
 
-
-def reset_game(snake, food):
-    snake.length = 1
-    snake.positions = [(1,1)]
-    snake.direction = pygame.K_RIGHT  # Start moving up
-    food.is_food_on_screen = True
-    food.spawn_food(snake.positions)
 
 # pygame setup
 pygame.init()
@@ -50,16 +46,6 @@ dt = 0
 snake = Snake(N_ROWS,N_COLS)
 food = Food(N_ROWS,N_COLS)
 food.spawn_food(snake.positions)
-
-Q = {}
-n_episodes = 1000  # Number of training episodes
-alpha = 0.1  # Learning rate
-gamma = 0.9  # Discount factor
-epsilon = 0.2  # Initial exploration rate
-epsilon_decay_factor = 0.995  # Rate at which epsilon decreases over episodes
-
-learning_rate = 0.1
-discount_factor = 0.9
 
 
 # IMPLEMENTAR Q-LEARNING 
@@ -89,13 +75,6 @@ while running:
     #Eat food
     if snake.eat_food(food.position):
         food.set_food_on_screen(False)
-
-    # Check for collisions
-    # if snake.check_collision():
-    #     reset_game(snake, food)
-    #     deaths += 1
-    #     food_eaten = 0
-    #     frame_count = 0
     
     if snake.check_collision():
         # Game over logic
@@ -134,16 +113,14 @@ while running:
     # Clear the screen
     screen.fill("black")
 
-    snake_color = "#64646333"
-    #Draw the snake
-    # pygame.draw.rect(screen, (200,200,200,0), pygame.Rect(2*SQUARE_SIZE, 2*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
+    #Draw the snake
     for segment in snake.positions:
-        # pygame.draw.rect(screen, pygame.Color(255,255,255,0.2), pygame.Rect(segment[0]*SQUARE_SIZE, segment[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
-        pygame.draw.rect(screen, snake_color, pygame.Rect(segment[0]*SQUARE_SIZE, segment[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+        pygame.draw.rect(screen, SNAKE_COLOR, pygame.Rect(segment[0]*SQUARE_SIZE, segment[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
     #Draw the food
     if food.is_food_on_screen:
-        pygame.draw.rect(screen, "red", pygame.Rect(food.position[0]*SQUARE_SIZE, food.position[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+        pygame.draw.rect(screen, FRUIT_COLOR, pygame.Rect(food.position[0]*SQUARE_SIZE, food.position[1]*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     # Display frame count and food eaten
     # font = pygame.font.Font(None, 36)
@@ -169,11 +146,7 @@ while running:
     pygame.display.flip()
 
     # limits FPS to 60
-    dt = clock.tick(FPS)/1000
-
-# with open('qtable.json', 'w') as json_file:
-#     json.dump(Q, json_file)
-
+    dt = clock.tick(FPS)/100
 
 pygame.quit()
 
