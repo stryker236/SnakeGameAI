@@ -13,9 +13,10 @@ class Food:
         self.n_cols = n_cols
         # self.square_size = SQUARE_SIZE
 
-    def spawn_food(self):
+    def spawn_food(self,snake_positions):
         if not self.is_food_on_screen:
-            self.position = (random.randrange(0, self.n_rows) , random.randrange(0, self.n_cols))  # Initial random position
+            while self.position in snake_positions: 
+                self.position = (random.randrange(0, self.n_rows) , random.randrange(0, self.n_cols))  # Initial random position
             self.is_food_on_screen = True
             return self.position
 

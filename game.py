@@ -4,7 +4,6 @@ from Snake import Snake
 from Food import Food
 from autonomous_move import auto_move1, manual_move
 import Q_learning as ql
-import json
 import requests
 from tinydb import TinyDB, Query
 # import server
@@ -15,7 +14,7 @@ HEIGHT = 1000
 SQUARE_SIZE = 100
 N_ROWS = 10
 N_COLS = 10
-FPS = 5
+FPS = 10
 db = TinyDB("test.json")
 
 
@@ -33,7 +32,7 @@ def reset_game(snake, food):
     snake.positions = [(1,1)]
     snake.direction = pygame.K_RIGHT  # Start moving up
     food.is_food_on_screen = True
-    food.spawn_food()
+    food.spawn_food(snake.positions)
 
 # pygame setup
 pygame.init()
@@ -50,7 +49,7 @@ dt = 0
 
 snake = Snake(N_ROWS,N_COLS)
 food = Food(N_ROWS,N_COLS)
-food.spawn_food()
+food.spawn_food(snake.positions)
 
 Q = {}
 n_episodes = 1000  # Number of training episodes
@@ -106,27 +105,30 @@ while running:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
-                        # reset_game(snake, food)
                         db.insert({"pos":snake.positions})
-                        response = requests.post("http://127.0.0.1:5000/data",json={"snake":str(snake.positions)})
-                        # response = requests.post("http://127.0.0.1:5000/data",json={"snake":"COBRINNHA"})
-                        # response = requests.post("http://127.0.0.1:5000/data",json="OLA")
-                        print(response.content.decode())
+                        
+                        # try:
+                        #     response = requests.post("http://127.0.0.1:5000/data",json={"snake":str(snake.positions)})
+                        #     print(response.content.decode())
+                        # except Exception as e:
+                        #     print(f'Errors {e}')
+                        
                         snake.length = 1
                         snake.positions = [(1,1)]
                         snake.direction = pygame.K_RIGHT  # Start moving up
                         food.is_food_on_screen = False
-                        food.spawn_food()
+                        food.spawn_food(snake.positions)
                         flag = False
                         break
                     elif event.key == pygame.K_q:
+                        db.insert({"pos":snake.positions})
                         running = False
                         flag = False
                         break
 
     # Spawn new food if it's not on the screen
     if not food.is_food_on_screen:
-        food_position = food.spawn_food()
+        food_position = food.spawn_food(snake.positions)
         food.set_food_on_screen(True)
 
     # Clear the screen
