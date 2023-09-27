@@ -1,11 +1,27 @@
-from flask import Flask, jsonify,request, session
-
+from flask import Flask, jsonify,request, session, redirect
+from tinydb import TinyDB,Query
 app = Flask(__name__)
-aux = ""
-@app.route('/data')
+# app.secret_key = "ola"
+
+db = TinyDB("test.json")
+
+@app.route('/data',methods=['POST','GET'])
 def get_data():
-    data = {'message': f'{snake.positions}'}
-    return jsonify(data)
+    if request.method == 'GET':
+        if "snake" in session:
+            pos = session["snake"]
+            print(pos)
+            # return str(pos)
+            return db.all()
+        else:
+            content = db.all()
+            print(type(content))
+            return content
+            # return "No snake"
+    elif request.method == 'POST':
+        data = request.json
+        session["snake"] = data["snake"]
+        return redirect("http://127.0.0.1:5000/data")
 
 @app.route('/api',methods=['POST','GET'])
 def get_req():

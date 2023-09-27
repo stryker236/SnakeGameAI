@@ -5,7 +5,9 @@ from Food import Food
 from autonomous_move import auto_move1, manual_move
 import Q_learning as ql
 import json
-import server
+import requests
+from tinydb import TinyDB, Query
+# import server
 
 
 WIDTH = 1000
@@ -14,7 +16,7 @@ SQUARE_SIZE = 100
 N_ROWS = 10
 N_COLS = 10
 FPS = 5
-
+db = TinyDB("test.json")
 
 
 total_food_eaten = 0
@@ -30,7 +32,6 @@ def reset_game(snake, food):
     snake.length = 1
     snake.positions = [(1,1)]
     snake.direction = pygame.K_RIGHT  # Start moving up
-    # snake.grow = False
     food.is_food_on_screen = True
     food.spawn_food()
 
@@ -100,22 +101,28 @@ while running:
     if snake.check_collision():
         # Game over logic
         flag = True
+        print("Game Over! Press 'R' to restart or 'Q' to quit.")
         while flag:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
-                        print("Game Over! Press 'R' to restart or 'Q' to quit.")
                         # reset_game(snake, food)
-                        snake.positions = [(1,1)]
+                        db.insert({"pos":snake.positions})
+                        response = requests.post("http://127.0.0.1:5000/data",json={"snake":str(snake.positions)})
+                        # response = requests.post("http://127.0.0.1:5000/data",json={"snake":"COBRINNHA"})
+                        # response = requests.post("http://127.0.0.1:5000/data",json="OLA")
+                        print(response.content.decode())
                         snake.length = 1
+                        snake.positions = [(1,1)]
+                        snake.direction = pygame.K_RIGHT  # Start moving up
+                        food.is_food_on_screen = False
+                        food.spawn_food()
                         flag = False
                         break
                     elif event.key == pygame.K_q:
                         running = False
                         flag = False
                         break
-            # if running:
-            #     break
 
     # Spawn new food if it's not on the screen
     if not food.is_food_on_screen:
@@ -162,8 +169,8 @@ while running:
     # limits FPS to 60
     dt = clock.tick(FPS)/1000
 
-with open('qtable.json', 'w') as json_file:
-    json.dump(Q, json_file)
+# with open('qtable.json', 'w') as json_file:
+#     json.dump(Q, json_file)
 
 
 pygame.quit()
