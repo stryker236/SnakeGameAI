@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Clickable List with Redirection</title>
+</head>
+<body>
+    <h1>Dynamic Clickable List with Redirection</h1>
+
+    <input type="text" id="itemName" placeholder="Enter Item Name">
+    <button onclick="addItem()">Add Item</button>
+    
+    <ul id="myList">
+        <!-- List items will be added here dynamically -->
+    </ul>
+
+    <script>
+        // Function to add a new item to the list with a custom name and redirection
+        function addItem() {
+            var list = document.getElementById("myList");
+            var itemNameInput = document.getElementById("itemName");
+            var itemName = itemNameInput.value.trim();
+            
+            if (itemName !== "") {
+                var newItem = document.createElement("li");
+                var itemLink = document.createElement("a");
+                itemLink.href = getRouteForItem(itemName); // Define the redirection route
+                itemLink.textContent = itemName;
+
+                // Make the item clickable
+                itemLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    // You can handle redirection here if needed
+                    alert("Redirecting to: " + getRouteForItem(itemName));
+                });
+
+                newItem.appendChild(itemLink);
+                list.appendChild(newItem);
+
+                // Clear the input field
+                itemNameInput.value = "";
+            }
+        }
+
+        // Define a function to determine the route for each item
+        function getRouteForItem(itemName) {
+            // You can implement your logic to determine the route based on the item name
+            switch (itemName.toLowerCase()) {
+                case "item1":
+                    return "route1.html";
+                case "item2":
+                    return "route2.html";
+                // Add more cases as needed
+                default:
+                    return "#"; // Default to a non-redirecting link
+            }
+        }
+    </script>
+</body>
+</html>

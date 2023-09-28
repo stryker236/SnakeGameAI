@@ -14,11 +14,12 @@ HEIGHT = 1000
 SQUARE_SIZE = 100
 N_ROWS = 10
 N_COLS = 10
-FPS = 10
+FPS = 6
 SNAKE_COLOR = "#64646333"
 FRUIT_COLOR = "red"
 
-db = TinyDB("test.json")
+db = TinyDB("./databases/GamesPlayed.json")
+table = db.table("Games")
 
 
 total_food_eaten = 0
@@ -80,27 +81,39 @@ while running:
         # Game over logic
         flag = True
         print("Game Over! Press 'R' to restart or 'Q' to quit.")
+        data = {
+            "snake" : snake.positions,
+            "fruit" : food.position,
+            "score" : snake.length - 1,
+            "frames" : frame_count
+        }
         while flag:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
-                        db.insert({"pos":snake.positions})
+                        table.insert(data)
                         
                         # try:
-                        #     response = requests.post("http://127.0.0.1:5000/data",json={"snake":str(snake.positions)})
+                        #     response = requests.post("http://127.0.0.1:5000/data",json={"game" : data})
                         #     print(response.content.decode())
                         # except Exception as e:
-                        #     print(f'Errors {e}')
+                        #     print("Post request failed")
                         
                         snake.length = 1
                         snake.positions = [(1,1)]
                         snake.direction = pygame.K_RIGHT  # Start moving up
                         food.is_food_on_screen = False
-                        food.spawn_food(snake.positions)
+                        frame_count = 0
+                        # food.spawn_food()
                         flag = False
                         break
                     elif event.key == pygame.K_q:
-                        db.insert({"pos":snake.positions})
+                        # try:
+                        #     response = requests.post("http://127.0.0.1:5000/data",{"game" : data})
+                        #     print(response.content.decode())
+                        # except Exception as e:
+                        #     print("Post request failed")
+                        db.insert(data)
                         running = False
                         flag = False
                         break
